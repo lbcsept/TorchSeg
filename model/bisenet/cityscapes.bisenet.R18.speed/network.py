@@ -176,5 +176,24 @@ class BiSeNetHead(nn.Module):
 
 
 if __name__ == "__main__":
-    model = BiSeNet(19, None)
+    #model = BiSeNet(19, None)
     # print(model)
+
+
+    # in __main__ of network.py 
+    import os
+    ## load model
+    model = BiSeNet(19, None, None, None)
+
+    ## Input to the model
+    batch_size=20
+    imgs = torch.randn(batch_size, 3, 128, 128, requires_grad=True)
+
+    # forward
+    res = model(imgs)
+    torch.onnx.export(model, 
+                    imgs, 
+                    os.path.join(os.path.dirname(__file__), "model0.onnx"),  
+                    export_params=True,        # store the trained parameter weights inside the model file
+                    output_names = ['output']
+    )

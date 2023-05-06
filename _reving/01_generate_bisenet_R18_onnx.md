@@ -31,3 +31,4 @@ torch.onnx.export(model,
 # visualization
 
 ![bisenet_R18](bisenet_R18.png "bisenet_R18")
+![bisenet_R18_speed.png](bisenet_R18_speed.png "bisenet_R18_speed")
