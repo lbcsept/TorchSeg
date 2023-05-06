@@ -5,6 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.checkpoint import checkpoint
 # from torchvision.models import resnet50, resnet101, resnet152
+from torch import optim
+import os
 
 from config import config
 from base_model import resnet18
@@ -169,5 +171,41 @@ class BiSeNetHead(nn.Module):
 
 
 if __name__ == "__main__":
-    model = BiSeNet(19, None)
-    # print(model)
+    model = BiSeNet(19, None, None)
+    #print(model)
+    print(__file__)
+
+    # Initialize optimizer
+    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+
+    imgs = torch.rand(2, 3, 100, 100, requires_grad=True)
+    res = model(imgs)
+    print(model)
+    print("Model's state_dict:")
+    for param_tensor in model.state_dict():
+        print(param_tensor, "\t", model.state_dict()[param_tensor].size())
+
+    # Print optimizer's state_dict
+    print("Optimizer's state_dict:")
+    for var_name in optimizer.state_dict():
+        print(var_name, "\t", optimizer.state_dict()[var_name])
+
+
+
+    #import torch.onnx
+
+
+    torch.save(model.state_dict(), os.path.join(os.path.dirname(__file__), "model0.pth"))
+
+
+    torch.onnx.export(model,               # model being run
+                  imgs,                         # model input (or a tuple for multiple inputs)
+                  os.path.join(os.path.dirname(__file__), "model0.onnx"),   # where to save the model (can be a file or file-like object)
+                  export_params=True,        # store the trained parameter weights inside the model file
+                  #opset_version=10,          # the ONNX version to export the model to
+                  #do_constant_folding=True,  # whether to execute constant folding for optimization
+                  #input_names = ['input'],   # the model's input names
+                  output_names = ['output'], # the model's output names
+                  #dynamic_axes={'input' : {0 : 'batch_size'},    # variable length axes
+                  #              'output' : {0 : 'batch_size'}}
+    )

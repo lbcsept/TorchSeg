@@ -19,6 +19,8 @@ cfg = C
 
 C.seed = 12345
 
+C.epoch_num = 1 # nv
+
 """please config ROOT_dir and user when u first using"""
 C.repo_name = 'TorchSeg'
 C.abs_dir = osp.realpath(".")
